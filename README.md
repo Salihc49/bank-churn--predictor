@@ -2,7 +2,7 @@
 
 An end-to-end Machine Learning web application designed to predict bank customer churn. This project helps financial institutions identify customers at high risk of leaving, enabling proactive retention strategies.
 
-🔗 **Live App:** [View Live Streamlit App](https://bank-churn-predictr.streamlit.app)
+🔗 **Live App:** [View Live Streamlit App](https://bank-churn--predictor-nzd9hkaiffrgnd4jg2bjfk.streamlit.app/)
 
 ---
 
