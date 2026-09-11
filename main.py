@@ -67,7 +67,6 @@ with tab2:
 with tab3:
     st.header("Key Drivers of Customer Churn")
     
-    # Extract feature importance if supported by model (e.g., Random Forest, XGBoost)
     if hasattr(model, 'feature_importances_'):
         importance_df = pd.DataFrame({
             'Feature': features,
