@@ -24,7 +24,7 @@ with tab1:
     st.header("Predict Churn for a Customer")
     st.write("Adjust the inputs below to predict customer churn.")
     
-    # Add your input controls inside this block
+    # Input controls
     credit_score = st.number_input("Credit Score", 300, 850, 600)
     age = st.slider("Age", 18, 100, 38)
     tenure = st.slider("Tenure (Years)", 0, 10, 5)
@@ -34,16 +34,28 @@ with tab1:
     is_active_member = st.selectbox("Is Active Member?", ["Yes", "No"])
     estimated_salary = st.number_input("Estimated Salary", 0.0, 200000.0, 50000.0)
     
-    # Add your prediction trigger button & logic here
+    # Prediction trigger button & logic
     if st.button("Predict Churn"):
-        # Run prediction with loaded model
-        st.success("Prediction complete!")
-    
+        input_data = pd.DataFrame({
+            'CreditScore': [credit_score],
+            'Age': [age],
+            'Tenure': [tenure],
+            'Balance': [balance],
+            'NumOfProducts': [num_of_products],
+            'HasCrCard': [1 if has_cr_card == "Yes" else 0],
+            'IsActiveMember': [1 if is_active_member == "Yes" else 0],
+            'EstimatedSalary': [estimated_salary]
+        })
+        
+        # Get prediction probability from loaded model
+        churn_prob = model.predict_proba(input_data)[0][1]
+        st.metric(label="Churn Probability", value=f"{churn_prob * 100:.2f}%")
 
 with tab2:
     st.header("Model Evaluation Metrics")
-    col1, col2, col3, col4 = st.columns(4)
+    st.write("Here is the performance breakdown of our trained model:")
     
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric(label="Accuracy", value="85.4%")
     col2.metric(label="Precision", value="78.2%")
     col3.metric(label="Recall", value="71.5%")
