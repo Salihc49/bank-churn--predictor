@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 
 st.set_page_config(page_title="Bank Churn Predictor", layout="wide")
-st.title("?? Bank Customer Churn Predictor")
+st.title("🏦 Bank Customer Churn Predictor")
 
 @st.cache_resource
 def load_assets():
@@ -14,13 +14,15 @@ def load_assets():
 
 model, features = load_assets()
 
-tab1, tab2, tab3 = st.tabs(["?? Single Prediction", "?? Model Performance", "?? Feature Importance"])
+tab1, tab2, tab3 = st.tabs(["🔮 Single Prediction", "📊 Model Performance", "💡 Feature Importance"])
 
 with tab1:
     st.header("Predict Churn for a Customer")
     st.write("Adjust the inputs below to predict customer churn.")
     
     credit_score = st.number_input("Credit Score", 300, 850, 600)
+    geography = st.selectbox("Geography", ["France", "Germany", "Spain"])
+    gender = st.selectbox("Gender", ["Male", "Female"])
     age = st.slider("Age", 18, 100, 38)
     tenure = st.slider("Tenure (Years)", 0, 10, 5)
     balance = st.number_input("Balance", 0.0, 250000.0, 60000.0)
@@ -30,6 +32,7 @@ with tab1:
     estimated_salary = st.number_input("Estimated Salary", 0.0, 200000.0, 50000.0)
     
     if st.button("Predict Churn"):
+        # Create raw input dataframe
         input_data = pd.DataFrame({
             'CreditScore': [credit_score],
             'Age': [age],
@@ -38,10 +41,17 @@ with tab1:
             'NumOfProducts': [num_of_products],
             'HasCrCard': [1 if has_cr_card == "Yes" else 0],
             'IsActiveMember': [1 if is_active_member == "Yes" else 0],
-            'EstimatedSalary': [estimated_salary]
+            'EstimatedSalary': [estimated_salary],
+            'Geography': [geography],
+            'Gender': [gender]
         })
         
-        churn_prob = model.predict_proba(input_data)[0][1]
+        # One-hot encode categorical features and align columns with model features
+        input_encoded = pd.get_dummies(input_data)
+        input_encoded = input_encoded.reindex(columns=features, fill_value=0)
+        
+        # Predict probability
+        churn_prob = model.predict_proba(input_encoded)[0][1]
         st.metric(label="Churn Probability", value=f"{churn_prob * 100:.2f}%")
 
 with tab2:
